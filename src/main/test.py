@@ -38,6 +38,10 @@ if __name__ == "__main__":
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     model_test=module.model(parameters)
+    
+    #Load pretrained Generator model
+    modelpath=os.path.join(os.getcwd(),'results','models',parameters['model'],'%s_Generator.model'%parameters['dataset'])
+    model_test.modelG.load_state_dict(torch.load(modelpath,map_location=torch.device('cpu')))
 
 #-----------------------------------------------------------------------------
 

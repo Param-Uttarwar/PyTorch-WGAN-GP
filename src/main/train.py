@@ -18,11 +18,11 @@ if __name__ == "__main__":
 #------------------------SET PARAMETERS---------------------------------------
 
     dataset="MNIST" #dataset =["MNIST","CIFAR10","FashionMNIST"]
-    model='WGAN-GP' #model=['GAN','WGAN','WGAN-GP']
+    model='GAN' #model=['GAN','WGAN','WGAN-GP']
               
     parameters={'learning_rateG':5e-4, 
             'learning_rateD':5e-4,
-            'num_epochs':20,
+            'num_epochs':50,
             'batch_size':64,
             'dataset':dataset, 
             'model':model 

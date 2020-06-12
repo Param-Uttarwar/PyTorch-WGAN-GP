@@ -12,6 +12,7 @@ from src.helper.visualize import *
 import numpy as np
 import os
 import pdb
+import pandas as pd
 
 
 #Descriminator Network
@@ -78,7 +79,7 @@ class Generator(nn.Module):
     
 class model():
     
-    def __init__(self,parameters,trainset=None):
+    def __init__(self,parameters,trainset=None,pretrained=False):
         
         self.parameters=parameters
         
@@ -105,6 +106,14 @@ class model():
                                              lr=self.parameters['learning_rateD'], weight_decay=4e-3)
 
         
+            
+        #Load pretrained model if true 
+        if pretrained:
+            modelpath=os.path.join(os.getcwd(),'results','models',self.parameters['model'],'%s_Generator.model'%self.parameters['dataset'])
+            model.modelG.load_state_dict(torch.load(modelpath))
+            modelpath=os.path.join(os.getcwd(),'results','models',self.parameters['model'],'%s_Discriminator.model'%self.parameters['dataset'])
+            model.modelD.load_state_dict(torch.load(modelpath))
+            
         #Initiate PyTorch dataloaders
         if trainset:
             self.trainset=trainset
@@ -191,7 +200,7 @@ class model():
             
             #Checkpoint save    
             if epoch%(self.parameters['num_epochs']//4)==0:
-                torch.save(self.modelG.state_dict(), os.path.join(os.getcwd(),'results','models',self.parameters['model'],'%s_checkpoint_%d.model'%(self.parameters['dataset'],epoch)))
+                torch.save(self.modelG.state_dict(), os.path.join(os.getcwd(),'results','models',self.parameters['model'],'%s_Gen_checkpoint_%d.model'%(self.parameters['dataset'],epoch)))
             
 
 
@@ -209,7 +218,8 @@ class model():
         
         #Save losses and model
         self.losses=losses
-        torch.save(self.modelG.state_dict(), os.path.join(os.getcwd(),'results','models',self.parameters['model'],'%s.model'%self.parameters['dataset']))
+        torch.save(self.modelG.state_dict(), os.path.join(os.getcwd(),'results','models',self.parameters['model'],'%s_Generator.model'%self.parameters['dataset']))
+        torch.save(self.modelD.state_dict(), os.path.join(os.getcwd(),'results','models',self.parameters['model'],'%s_Discriminator.model'%self.parameters['dataset']))
         losses_df=pd.DataFrame(losses)
         losses_df.to_excel(os.path.join(os.getcwd(),'results','models',self.parameters['model'],'%s_losses.xlsx'%self.parameters['dataset']))    
         
